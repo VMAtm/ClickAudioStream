@@ -1,0 +1,4 @@
+http://stackoverflow.com/questions/10207762/how-to-use-request-or-http-module-to-read-gzip-page-into-a-string/10603029#10603029
+http://nodestreams.com/
+https://docs.nodejitsu.com/articles/advanced/streams/how-to-use-stream-pipe
+https://www.npmjs.com/package/stream-playground
