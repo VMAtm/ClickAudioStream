@@ -3,7 +3,6 @@ var fs = require('fs');
 var url = require('url');
 var app = express();
 
-
 app.get('/', function (request, response) {
   var fileName = request.query.file;
   fs.exists(fileName ? fileName : "", function(exists) {
@@ -12,8 +11,16 @@ app.get('/', function (request, response) {
       // Accept-Ranges: bytes
       var stats = fs.statSync(fileName);
       var size = stats["size"];
+      var current = 0;
+      var separatorSize = 512 * 512 * 2;
+      var bytes = "";
+//      while ((current + separatorSize) < size) {
+//        bytes += "" + current + "-" + (current + separatorSize - 1) + "/";
+//        current += separatorSize;
+//      }
+      bytes += "0-" + (separatorSize - 1) + '/' + size;
       response.set('Content-Length', size);
-      response.set('Content-Range', 'bytes 0-' + (size - 1) + '/' + size);
+      response.set('Content-Range', 'bytes ' + bytes);
       fs.createReadStream("./" + fileName).pipe(response.status(206));
     } else {
       response.send('Hello World!');
