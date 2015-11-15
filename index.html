@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
+  <!--<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>-->
+  <script type="text/javascript" src="/Scheduler.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Clilk Audio Test</title>
+
+  <script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+    });
+
+    function loadJSON(id) {
+      $.ajax({
+        url: '/',
+        data: { 'jsonId': id },
+        dataType: 'json'
+      }).done(function (data) {
+        s = new Scheduler(data);
+        $("#scheduleView").val(JSON.stringify(data));
+      });
+    }
+
+    function play() {
+      s.play();
+    }
+
+  </script>
+</head>
+<body>
+  <textarea id="scheduleView" cols="80" rows="10"></textarea><br />
+  <button onclick="loadJSON(1);">1</button>
+  <button onclick="loadJSON(2);">2</button>
+  <button onclick="loadJSON(3);">3</button>
+  <button onclick="loadJSON(4);">4</button>
+  <br /><br />
+  <button onclick="play();">Play!</button>
+</body>
+</html>

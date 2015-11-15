@@ -2,4 +2,7 @@ http://stackoverflow.com/questions/10207762/how-to-use-request-or-http-module-to
 http://nodestreams.com/
 https://docs.nodejitsu.com/articles/advanced/streams/how-to-use-stream-pipe
 https://www.npmjs.com/package/stream-playground
-http://stackoverflow.com/questions/28440262/web-audio-api-for-live-streaming
+https://github.com/bkw/node-streambrake
+https://github.com/substack/node-brake
+http://superuser.com/questions/38351/how-do-i-measure-how-much-bandwidth-internet-radio-hogs
+https://www.new-bamboo.co.uk/blog/2009/12/08/real-time-online-activity-monitor-example-with-node-js-and-websocket/

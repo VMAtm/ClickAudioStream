@@ -1,0 +1,52 @@
+This library abstracts js WebAudio API and falls back to <audio> HTML tag if WebAudio is not supported.
+WebAudio may be not supported on some browasers that run player (need to check).
+The most interesting thing is that this audio lib has the following description on its home page:
+"buffer: Boolean (false by default) Set to true to force HTML5 Audio.
+This should be used for large audio files so that you don't have to wait for the full
+file to be downloaded and decoded before playing."
+http://goldfirestudios.com/blog/104/howler.js-Modern-Web-Audio-Javascript-Library
+
+Implementation of nodejs to browser WAV audio streaming using Web Sockets
+https://www.npmjs.com/package/websockets-streaming-audio
+
+Article about precise timing and audio in javascript:
+http://www.html5rocks.com/en/tutorials/audio/scheduling/
+
+Library for audio playback with fallback to <audio> tag
+http://buzz.jaysalvat.com/
+
+WebRTC isn't widely supported. Only desktop FF abd Chrome are supported:
+http://caniuse.com/#search=webrtc
+
+WebSockets are almost supported both on desktop and mobile:
+http://caniuse.com/#feat=websockets
+
+Lib for binary data streaming over websocket:
+http://binaryjs.com/
+
+Good browser only audio editor (looks like uses WebAudio):
+https://beautifulaudioeditor.appspot.com
+
+WebAudio API is not supported by mobile&desktop IE,
+mobile Android and Opera browsers:
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+
+HTML5 audio tag supports 'autoplay' attribute that specifies that
+audio will be played as soon as it can without complete download.
+Also it has 'preload' attribute that serves as a hint for the browser
+on how to download the audio. HTML5 audio tag is supported by almost all
+the browsers:
+https://developer.mozilla.org/en/docs/Web/HTML/Element/audio
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
+It may provide useful events such as 'canplaythrough':
+https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events
+W3School site reports that this event is supported on all the browsers:
+http://www.w3schools.com/tags/av_event_canplaythrough.asp
+Here is a super cool comprehensive guide on HTML5 audio tag usage and details:
+https://developer.mozilla.org/en-US/Apps/Build/Audio_and_video_delivery/Cross-browser_audio_basics
+
+------------------------------------------------------
+Additional interesting info: this library demonstrates wav recording nad mp3 encoding
+in browser: http://audior.ec/blog/recording-mp3-using-only-html5-and-javascript-recordmp3-js/
+
+

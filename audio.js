@@ -4,29 +4,31 @@ var url = require('url');
 var app = express();
 
 app.get('/', function (request, response) {
+  var jsonId = request.query.jsonId;
+  if (jsonId > 0) {
+    response.sendFile(__dirname + '/scripts/JSON' + jsonId + '.json');
+    return;
+  }
   var fileName = request.query.file;
-  fs.exists(fileName ? fileName : "", function(exists) {
+  fs.exists(fileName ? fileName : '', function(exists) {
     if (exists) {
       response.set('Content-Type', 'audio/mpeg');
-      // Accept-Ranges: bytes
       var stats = fs.statSync(fileName);
-      var size = stats["size"];
+      var size = stats['size'];
       var current = 0;
-      var separatorSize = 512 * 512 * 2;
-      var bytes = "";
-//      while ((current + separatorSize) < size) {
-//        bytes += "" + current + "-" + (current + separatorSize - 1) + "/";
-//        current += separatorSize;
-//      }
-      bytes += "0-" + (separatorSize - 1) + '/' + size;
+      var separatorSize = 512 * 1024;
+      var bytes = '';
+      bytes += '0-' + (separatorSize - 1) + '/' + size;
       response.set('Content-Length', size);
       response.set('Content-Range', 'bytes ' + bytes);
-      fs.createReadStream("./" + fileName).pipe(response.status(206));
+      fs.createReadStream('./' + fileName).pipe(response.status(206));
     } else {
-      response.send('Hello World!');
+      response.sendFile(__dirname + '/index.html');
     }
   });
 });
+
+app.use(express.static(__dirname + '/scripts'));
 
 var server = app.listen(3000, function () {
   var host = server.address().address;
