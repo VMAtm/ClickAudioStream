@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery-2.1.4.min.js"></script>
   <!--<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-  <script type="text/javascript" src="/Scheduler.js"></script>
+  <script type="text/javascript" src="scripts/Scheduler.js"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Clilk Audio Test</title>
 
@@ -13,8 +13,7 @@
 
     function loadJSON(id) {
       $.ajax({
-        url: '/',
-        data: { 'jsonId': id },
+        url: '/res/plans/plan' + id + '.json',
         dataType: 'json'
       }).done(function (data) {
         s = new Scheduler(data);
