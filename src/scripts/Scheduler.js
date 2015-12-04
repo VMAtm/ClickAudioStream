@@ -1,19 +1,40 @@
 function Scheduler(s) {
   this.schedule = s;
-  this.schedule.forEach(function onProcess(current, index, array) {
-    this.track = new Audio('/res/audio/' + current.name);
-    this.track.currentTime = current.seekTo;
-    this.track.loop = current.loop;
-    this.track.preload = 'auto';
-    this.startAfter = current.startAfter;
-  });
+  this.initialize();
+  return this;
 }
 
 Scheduler.prototype = {
-  play() {
-    setTimeout(function () {
-      this.track.autoplay = true;
-      this.track.play();
-    }, this.startAfter ? this.startAfter : 0);
+  currentlyPlaying: [],
+  paused: false,
+  playlist: [],
+  schedule: [],
+  initialize: function () {
+    this.schedule.forEach(function (current, index, array) {
+      var track = new Audio('/res/audio/' + current.name);
+      track.loop = current.loop;
+      track.preload = 'auto';
+      track.currentTime = current.seekTo;
+      this.playlist.push(track);
+    });
+  },
+  play: function() {
+    this.playlist.forEach(function (current, index, array) {
+      setTimeout(function () {
+        this.currentlyPlaying.push(current);
+        current.autoplay = true;
+        current.play();
+      }, this.schedule[index].startAfter ? this.schedule[index].startAfter : 0);
+    });
+  },
+  togglePause: function () {
+    this.paused = !this.paused;
+    this.currentlyPlaying.forEach(function (current, index, array) {
+      if (current.paused) {
+        current.play();
+      } else {
+        current.pause();
+      }
+    });
   }
 }
