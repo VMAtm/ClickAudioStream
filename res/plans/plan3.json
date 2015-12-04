@@ -1,8 +1,14 @@
 [
-    {
-        "name": "04_Nothing_Else_Matters.mp3",
-        "seekTo": 0,
-        "loop": true,
-        "startAfter": 0
-    }
+  {
+    "name": "04_Nothing_Else_Matters.mp3",
+    "seekTo": 0,
+    "loop": true,
+    "startAfter": 0
+  },
+  {
+    "name": "Мои_Ракеты_Вверх-Flow.mp3",
+    "seekTo": 80000,
+    "loop": true,
+    "startAfter": 3000
+  }
 ]
