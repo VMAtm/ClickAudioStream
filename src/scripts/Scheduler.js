@@ -1,40 +1,33 @@
 function Scheduler(s) {
   this.schedule = s;
+  this.currentlyPlaying = [];
+  this.playlist = [];
+  this.schedule = [];
+  this.paused = false;
   this.initialize();
   return this;
 }
 
-Scheduler.prototype = {
-  currentlyPlaying: [],
-  paused: false,
-  playlist: [],
-  schedule: [],
-  initialize: function () {
-    this.schedule.forEach(function (current, index, array) {
-      var track = new Audio('/res/audio/' + current.name);
-      track.loop = current.loop;
-      track.preload = 'auto';
-      track.currentTime = current.seekTo;
-      this.playlist.push(track);
-    });
-  },
-  play: function() {
-    this.playlist.forEach(function (current, index, array) {
-      setTimeout(function () {
-        this.currentlyPlaying.push(current);
-        current.autoplay = true;
-        current.play();
-      }, this.schedule[index].startAfter ? this.schedule[index].startAfter : 0);
-    });
-  },
-  togglePause: function () {
-    this.paused = !this.paused;
-    this.currentlyPlaying.forEach(function (current, index, array) {
-      if (current.paused) {
-        current.play();
-      } else {
-        current.pause();
-      }
-    });
-  }
-}
+Scheduler.prototype.initialize = function () {
+  this.schedule.forEach(function (current) {
+    this.playlist.push(new TrackWrapper(current));
+  });
+};
+
+Scheduler.prototype.play = function() {
+  this.playlist.forEach(function (current, index, array) {
+    this.currentlyPlaying.push(current);
+    current.play();
+  });
+};
+
+Scheduler.prototype.togglePause = function () {
+  this.paused = !this.paused;
+  this.currentlyPlaying.forEach(function (current, index, array) {
+    if (current.paused) {
+      current.play();
+    } else {
+      current.pause();
+    }
+  });
+};
