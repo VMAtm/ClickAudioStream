@@ -2,16 +2,16 @@ function TrackWrapper(audio) {
   this.track = new Audio('/res/audio/' + audio.name);
   this.track.preload = 'auto';
   this.startAfter = audio.startAfter;
+  this.duration = audio.duration;
   this.start = audio.start;
   this.end = audio.end;
-  this.duration = audio.duration;
-  this.loop = this.end - this.start < this.duration;
+  this.loop = (this.end - this.start) < this.duration;
 }
 
-TrackWrapper.prototype.play = function() {
-  setTimeout(function () {
-    this.startAt(0);
-  }, this.startAfter);
+TrackWrapper.prototype.play = function (offsetMS) {
+  this.clock.addOneShotTimer(function () {
+    this.startAt(offsetMS);
+  }, math.max(this.startAfter - offsetMS, 0));
 };
 
 TrackWrapper.prototype.pause = function () {
@@ -20,23 +20,28 @@ TrackWrapper.prototype.pause = function () {
   } else {
     this.track.pause();
   }
-}
+};
 
-TrackWrapper.prototype.startAt = function(msOffset) {
+TrackWrapper.prototype.setClock = function (timeClock) {
+  this.clock = timeClock;
+};
+
+TrackWrapper.prototype.startAt = function (msOffset) {
   if (this.start + msOffset >= this.duration) {
     return;
   }
 
-  setTimeout(function() {
+  this.clock.addOneShotTimer(function () {
     this.track.currentTime = msOffset + this.start;
     this.track.autoplay = true;
     this.track.play();
   }, 0);
-  setTimeout(function() {
+  var playWindow = this.end - this.start;
+  this.clock.addOneShotTimer(function () {
     this.track.stop();
     // infinite loop check
     if (this.loop) {
       this.startAt(0);
     }
-  }, this.end - this.start - msOffset % (this.end - this.start));
-}
+  }, playWindow - msOffset % playWindow);
+};

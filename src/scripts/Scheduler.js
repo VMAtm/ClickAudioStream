@@ -2,9 +2,9 @@ function Scheduler(s) {
   this.schedule = s;
   this.currentlyPlaying = [];
   this.playlist = [];
-  this.schedule = [];
   this.paused = false;
   this.initialize();
+  this.clock = null;
   return this;
 }
 
@@ -15,19 +15,36 @@ Scheduler.prototype.initialize = function () {
 };
 
 Scheduler.prototype.play = function() {
+  this.seek(0);
+};
+
+Scheduler.prototype.seek = function (offsetMS) {
+  if (this.currentlyPlaying) {
+    delete this.currentlyPlaying;
+    this.currentlyPlaying = [];
+  }
+  if (this.clock) {
+    this.clock.destroy();
+  }
+
+  this.clock = Clock();
+  setTimeout(function () {
+    if (!this.paused) {
+      this.clock.update();
+    }
+  }, 30);
   this.playlist.forEach(function (current, index, array) {
-    this.currentlyPlaying.push(current);
-    current.play();
+    if (current.startAfter <= offsetMS && (current.startAfter + duration) >= offsetMS) {
+      this.currentlyPlaying.push(current);
+      current.setClock(this.clock);
+      current.play(offsetMS);
+    }
   });
 };
 
 Scheduler.prototype.togglePause = function () {
   this.paused = !this.paused;
   this.currentlyPlaying.forEach(function (current, index, array) {
-    if (current.paused) {
-      current.play();
-    } else {
-      current.pause();
-    }
+    current.pause();
   });
 };
