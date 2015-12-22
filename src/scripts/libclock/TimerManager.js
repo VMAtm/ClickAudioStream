@@ -7,12 +7,10 @@ function TimerManager(clock) {
 TimerManager.prototype.destroy = function () {
   // Protect from call during timer callback call
   setTimeout(function () {
-    for (var timer in this._orderedTimers) {
+    for (var i = 0; i < this._orderedTimers.length; ++i) {
+      var timer = this._orderedTimers[i];
       timer.destroy();
     }
-    //_.each(this._orderedTimers, function(timer) {
-    //    timer.destroy();
-    //});
     delete this._clock;
     delete this._orderedTimers;
     delete this._orderedTimers2;

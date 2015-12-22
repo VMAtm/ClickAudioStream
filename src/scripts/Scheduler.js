@@ -1,50 +1,78 @@
-function Scheduler(s) {
-  this.schedule = s;
-  this.currentlyPlaying = [];
-  this.playlist = [];
-  this.paused = false;
-  this.initialize();
-  this.clock = null;
-  return this;
+function Scheduler(schedule) {
+  this._playingTracks = [];
+  this._allTracks = [];
+  this._paused = false;
+  this._clock = null;
+
+  schedule.forEach(function (trackPlaybackDescription) {
+    var track = new TrackWrapper(trackPlaybackDescription);
+    this._allTracks.push(track);
+  }, this);
+
+  this._clockUpdateTimer = setInterval(
+    this._updatePlaybackPosition.bind(this), 30
+  );
 }
 
-Scheduler.prototype.initialize = function () {
-  this.schedule.forEach(function (current) {
-    this.playlist.push(new TrackWrapper(current));
-  });
+Scheduler.prototype.destroy = function() {
+  clearInterval(this._clockUpdateTimer);
+  this._allTracks.forEach(function(track) {
+    track.destroy();
+  }, this);
+  delete this._playingTracks;
+  delete this._allTracks;
+  delete this._paused;
+  delete this._clock;
+  delete this._clockUpdateTimer;
 };
 
 Scheduler.prototype.play = function() {
+  // XXX should continue not restart if we were paused
   this.seek(0);
+  this._clock.paused = false;
+};
+
+Scheduler.prototype.pause = function () {
+  this._paused = true;
+  this._playingTracks.forEach(function (track) {
+    track.pause();
+  });
+  this._clock.paused = true;
 };
 
 Scheduler.prototype.seek = function (offsetMS) {
-  if (this.currentlyPlaying) {
-    delete this.currentlyPlaying;
-    this.currentlyPlaying = [];
-  }
-  if (this.clock) {
-    this.clock.destroy();
+  this._paused = false;
+
+  if (this._playingTracks) {
+    this._playingTracks.forEach(function(track) {
+      track.pause();
+    }, this);
+    this._playingTracks = [];
   }
 
-  this.clock = Clock();
-  setTimeout(function () {
-    if (!this.paused) {
-      this.clock.update();
-    }
-  }, 30);
-  this.playlist.forEach(function (current, index, array) {
-    if (current.startAfter <= offsetMS && (current.startAfter + duration) >= offsetMS) {
-      this.currentlyPlaying.push(current);
-      current.setClock(this.clock);
-      current.play(offsetMS);
-    }
-  });
+  this._clock && this._clock.destroy();
+  this._clock = new Clock();
+
+  this._allTracks.forEach(function (track) {
+    if (!track.isPlayedAt(offsetMS)) return;
+
+    this._playingTracks.push(track);
+    track.setClock(this._clock);
+    track.play(offsetMS);
+  }, this);
 };
 
-Scheduler.prototype.togglePause = function () {
-  this.paused = !this.paused;
-  this.currentlyPlaying.forEach(function (current, index, array) {
-    current.pause();
-  });
-};
+Scheduler.prototype._updatePlaybackPosition = function() {
+  if (this._paused) return;
+  if (!this._clock) return;
+  this._clock.update();
+
+  this._allTracks.forEach(function (track) {
+    if (!track.isPlayedAt(this._clock.getTimeMS())) return;
+    if (this._playingTracks.indexOf(track) !== -1) return;
+
+    this._playingTracks.push(track);
+    track.setClock(this._clock);
+    track.play(this._clock.getTimeMS());
+  }, this);
+}

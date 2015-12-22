@@ -3,37 +3,38 @@
 <head>
   <script type="text/javascript" src="scripts/jquery-2.1.4.min.js"></script>
   <!--<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-  <script type="text/javascript" src="scripts/Scheduler.js"></script>
   <script type="text/javascript" src="scripts/libclock/Timer.js"></script>
   <script type="text/javascript" src="scripts/libclock/TimerManager.js"></script>
   <script type="text/javascript" src="scripts/libclock/Clock.js"></script>
+  <script type="text/javascript" src="scripts/TrackWrapper.js"></script>
+  <script type="text/javascript" src="scripts/Scheduler.js"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Clilk Audio Test</title>
 
   <script language="javascript" type="text/javascript">
-    $(document).ready(function () {
-    });
+    var currentPlayer = null;
 
     function loadJSON(id) {
       $.ajax({
         url: '/res/plans/plan' + id + '.json',
         dataType: 'json'
       }).done(function (data) {
-        s = new Scheduler(data);
+        currentPlayer && currentPlayer.destroy();
+        currentPlayer = new Scheduler(data);
         $("#scheduleView").val(JSON.stringify(data));
       });
     }
 
     function play() {
-      s.play();
+      currentPlayer.play();
     }
 
-    function togglePause() {
-      s.togglePause();
+    function pause() {
+      currentPlayer.pause();
     }
 
     function seek() {
-      s.seek($("#seekEl").val());
+      currentPlayer.seek($("#seekEl").val());
     }
   </script>
 </head>
@@ -45,8 +46,10 @@
   <button onclick="loadJSON(4);">4</button>
   <br /><br />
   <button onclick="play();">Play!</button>
+  <button onclick="pause();">Pause!</button>
+  <br/>
   <input type="text" value="1000" id="seekEl" />
   <button onclick="seek();">Seek</button>
-  <button onclick="togglePause();">Pause!</button>
+
 </body>
 </html>
