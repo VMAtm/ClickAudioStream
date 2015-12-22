@@ -59,7 +59,7 @@ TrackWrapper.prototype._playAt = function(trackPlaybackStartOffset) {
   var playbackDurationFromStartOffset =
       this._playbackDuration - trackPlaybackStartOffset;
   this._playbackStopTimerDestroyer = this._clock.addOneShotTimer(
-    playbackDurationFromStartOffset, this.stop, this
+    playbackDurationFromStartOffset, this.pause, this
   );
 
   var ONE_LOOP_PLAYBACK_DURATION = this._html5AudioCutEnd - this._html5AudioCutStart;

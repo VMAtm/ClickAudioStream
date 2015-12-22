@@ -27,9 +27,13 @@ Scheduler.prototype.destroy = function() {
 };
 
 Scheduler.prototype.play = function() {
-  // XXX should continue not restart if we were paused
-  this.seek(0);
-  this._clock.paused = false;
+  if (this._paused) {
+    this._clock.paused = false;
+    // XXX should continue not restart if we were paused
+    throw new Error('Not implemented');
+  } else {
+    this.seek(0);
+  }
 };
 
 Scheduler.prototype.pause = function () {
@@ -43,12 +47,10 @@ Scheduler.prototype.pause = function () {
 Scheduler.prototype.seek = function (offsetMS) {
   this._paused = false;
 
-  if (this._playingTracks) {
-    this._playingTracks.forEach(function(track) {
-      track.pause();
-    }, this);
-    this._playingTracks = [];
-  }
+  this._playingTracks.forEach(function(track) {
+    track.pause();
+  }, this);
+  this._playingTracks = [];
 
   this._clock && this._clock.destroy();
   this._clock = new Clock();
