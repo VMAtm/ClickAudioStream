@@ -39,6 +39,11 @@ TrackWrapper.prototype.pause = function () {
   this._html5Audio.pause();
 };
 
+TrackWrapper.prototype.unpause = function () {
+  this._isPlaying = true;
+  this._playAt(this._clock.getTimeMS());
+};
+
 TrackWrapper.prototype.stop = function() {
   if (!this._beforeStop()) return;
   this._html5Audio.src = '';

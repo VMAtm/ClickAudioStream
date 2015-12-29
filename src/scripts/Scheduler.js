@@ -28,9 +28,11 @@ Scheduler.prototype.destroy = function() {
 
 Scheduler.prototype.play = function() {
   if (this._paused) {
+    this._paused = false;
+    this._playingTracks.forEach(function (track) {
+      track.unpause();
+    });
     this._clock.paused = false;
-    // XXX should continue not restart if we were paused
-    throw new Error('Not implemented');
   } else {
     this.seek(0);
   }
